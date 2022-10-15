@@ -1,5 +1,4 @@
-﻿
-namespace FakerLib
+﻿namespace FakerLib
 {
     public interface IValueGenerator
     {
