@@ -6,11 +6,13 @@ namespace FakerLib
     {
         private readonly List<IValueGenerator> generators;
         private GeneratorContext generatorContext;
+        private ObjectCreator creator;
 
-        Faker()
+        public Faker()
         {
             generators = GetGenerators();
             generatorContext = new GeneratorContext(new Random(), this);
+            creator = new ObjectCreator(this, generatorContext);
         }
 
         private List<IValueGenerator> GetGenerators()
@@ -35,7 +37,6 @@ namespace FakerLib
             return (T)Create(typeof(T));
         }
 
-        // Может быть вызван изнутри Faker, из IValueGenerator (см. ниже) или пользователем
         public object Create(Type t)
         {
             foreach (var generator in generators)
@@ -45,7 +46,10 @@ namespace FakerLib
                     return generator.Generate(t, generatorContext);    
                 }
             }
-            throw new Exception($"Can not generate for type {t.Name}");
+            Object? obj = creator.Generate(t);
+            if (obj != null) return obj;
+
+            throw new FakerException($"Can not generate for type {t.Name}");
         }
     }
 }

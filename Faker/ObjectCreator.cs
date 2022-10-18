@@ -7,14 +7,14 @@
         private readonly RecursionKiller checker;
 
 
-        public ObjectCreator(IFaker Faker, GeneratorContext generatorContext, RecursionKiller recursion)
+        public ObjectCreator(IFaker Faker, GeneratorContext generatorContext)
         {
             faker = Faker;
             context = generatorContext;
-            checker = recursion;
+            checker = new RecursionKiller(3);
         }
 
-        public Object Generate(Type type)
+        public Object? Generate(Type type)
         {
             Object? obj = null;
             if (checker.Add(type))
@@ -24,7 +24,7 @@
                 FillProperties(type, obj);
                 checker.Clean(type);
             }
-            return obj!;
+            return obj;
         }
 
         public Object Create(Type type)
@@ -45,7 +45,7 @@
                 if (obj != null) return obj;
             }
             catch { }
-            throw new Exception($"Can not create object of type { type }");
+            throw new FakerException($"Can not create object of type { type }");
         }
 
         public void FillFields(Type type, Object obj)
@@ -57,7 +57,7 @@
                 {
                     if (Equals(field.GetValue(obj), GetDefaultValue(field.FieldType)))
                     {
-                        faker.Create(field.FieldType);
+                        field.SetValue(obj, faker.Create(field.FieldType));
                     }
                 }
                 catch { }
@@ -67,13 +67,13 @@
         public void FillProperties(Type type, Object obj)
         {
             var properties = type.GetProperties().Where(p => p.CanWrite);
-            foreach (var properrty in properties)
+            foreach (var property in properties)
             {
                 try
                 {
-                    if (Equals(properrty.GetValue(obj), GetDefaultValue(properrty.PropertyType)))
+                    if (Equals(property.GetValue(obj), GetDefaultValue(property.PropertyType)))
                     {
-                        faker.Create(properrty.PropertyType);
+                        property.SetValue(obj, faker.Create(property.PropertyType));
                     }
                 }
                 catch { }

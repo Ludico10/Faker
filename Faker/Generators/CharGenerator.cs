@@ -13,7 +13,7 @@ namespace FakerLib.Generators
 
         object IValueGenerator.Generate(Type typeToGenerate, GeneratorContext context)
         {
-            return chars[context.Random.Next(chars.Length)];
+            return (char)chars[context.Random.Next(chars.Length)];
         }
     }
 }

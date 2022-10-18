@@ -9,7 +9,7 @@
 
         object IValueGenerator.Generate(Type typeToGenerate, GeneratorContext context)
         {
-            return context.Random.NextSingle() + context.Random.NextInt64();
+            return (decimal)(context.Random.NextSingle() + context.Random.NextInt64());
         }
     }
 }

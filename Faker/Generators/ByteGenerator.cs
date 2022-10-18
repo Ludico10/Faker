@@ -9,7 +9,7 @@
 
         object IValueGenerator.Generate(Type typeToGenerate, GeneratorContext context)
         {
-            return context.Random.Next(1, byte.MaxValue);
+            return (byte)context.Random.Next(1, byte.MaxValue);
         }
     }
 }
