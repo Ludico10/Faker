@@ -1,0 +1,12 @@
+C:\Users\eugen\source\repos\Faker\Faker\bin\Debug\net6.0\FakerLib.deps.json
+C:\Users\eugen\source\repos\Faker\Faker\bin\Debug\net6.0\FakerLib.dll
+C:\Users\eugen\source\repos\Faker\Faker\bin\Debug\net6.0\ref\FakerLib.dll
+C:\Users\eugen\source\repos\Faker\Faker\bin\Debug\net6.0\FakerLib.pdb
+C:\Users\eugen\source\repos\Faker\Faker\obj\Debug\net6.0\FakerLib.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\eugen\source\repos\Faker\Faker\obj\Debug\net6.0\FakerLib.AssemblyInfoInputs.cache
+C:\Users\eugen\source\repos\Faker\Faker\obj\Debug\net6.0\FakerLib.AssemblyInfo.cs
+C:\Users\eugen\source\repos\Faker\Faker\obj\Debug\net6.0\FakerLib.csproj.CoreCompileInputs.cache
+C:\Users\eugen\source\repos\Faker\Faker\obj\Debug\net6.0\FakerLib.dll
+C:\Users\eugen\source\repos\Faker\Faker\obj\Debug\net6.0\ref\FakerLib.dll
+C:\Users\eugen\source\repos\Faker\Faker\obj\Debug\net6.0\FakerLib.pdb
+C:\Users\eugen\source\repos\Faker\Faker\obj\Debug\net6.0\FakerLib.csproj.AssemblyReference.cache
