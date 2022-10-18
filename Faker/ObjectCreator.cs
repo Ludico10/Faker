@@ -1,40 +1,41 @@
 ﻿namespace FakerLib
 {
-    public class ObjectCreator
+    public class ObjectCreator : IValueGenerator
     {
-        private readonly IFaker faker;
-        private readonly GeneratorContext context;
         private readonly RecursionKiller checker;
 
-
-        public ObjectCreator(IFaker Faker, GeneratorContext generatorContext)
+        public ObjectCreator(IFaker Faker)
         {
-            faker = Faker;
-            context = generatorContext;
             checker = new RecursionKiller(3);
         }
 
-        public Object? Generate(Type type)
+        public bool CanGenerate(Type type)
+        {
+            return type.IsClass || (type.IsValueType && !type.IsEnum);
+        }
+
+        public Object Generate(Type type, GeneratorContext generatorContext)
         {
             Object? obj = null;
             if (checker.Add(type))
             {
-                obj = Create(type);
-                FillFields(type, obj);
-                FillProperties(type, obj);
+                obj = Create(type, generatorContext);
+                FillFields(type, obj, generatorContext);
+                FillProperties(type, obj, generatorContext);
                 checker.Clean(type);
             }
-            return obj;
+            if (obj != null) return obj;
+            throw new FakerException($"Can not generate for type {type.Name}");
         }
 
-        public Object Create(Type type)
+        public Object Create(Type type, GeneratorContext context)
         {
             var constructors = type.GetConstructors().OrderByDescending(x => x.GetParameters().Length);
             foreach (var constructor in constructors)
             {
                 try
                 {
-                    var args = constructor.GetParameters().Select(x => faker.Create(x.ParameterType)).ToArray();
+                    var args = constructor.GetParameters().Select(x => context.Faker.Create(x.ParameterType)).ToArray();
                     return constructor.Invoke(args);
                 }
                 catch { }
@@ -48,7 +49,7 @@
             throw new FakerException($"Can not create object of type { type }");
         }
 
-        public void FillFields(Type type, Object obj)
+        public void FillFields(Type type, Object obj, GeneratorContext context)
         {
             var fields = type.GetFields().Where(f => f.IsPublic);
             foreach (var field in fields)
@@ -57,14 +58,14 @@
                 {
                     if (Equals(field.GetValue(obj), GetDefaultValue(field.FieldType)))
                     {
-                        field.SetValue(obj, faker.Create(field.FieldType));
+                        field.SetValue(obj, context.Faker.Create(field.FieldType));
                     }
                 }
                 catch { }
             }
         }
 
-        public void FillProperties(Type type, Object obj)
+        public void FillProperties(Type type, Object obj, GeneratorContext context)
         {
             var properties = type.GetProperties().Where(p => p.CanWrite);
             foreach (var property in properties)
@@ -73,7 +74,7 @@
                 {
                     if (Equals(property.GetValue(obj), GetDefaultValue(property.PropertyType)))
                     {
-                        property.SetValue(obj, faker.Create(property.PropertyType));
+                        property.SetValue(obj, context.Faker.Create(property.PropertyType));
                     }
                 }
                 catch { }
